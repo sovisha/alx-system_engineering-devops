@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-#Creating a script that lists files
+#displays the content of the current directory, in a list format, where only the part of the name after the first dash is displayed. 
+
 for i in *
 do
-    echo "$i" | cut -f 2- -d '-'
+	echo "$i" | cut -d '-' -f2
 done
