@@ -32,12 +32,14 @@ defaults
         errorfile 502 /etc/haproxy/errors/502.http
         errorfile 503 /etc/haproxy/errors/503.http
         errorfile 504 /etc/haproxy/errors/504.http
-frontend haproxy_balancer
-    bind *:80
-    mode http
-    default_backend backend-servers
 
-backend backend-servers
-    balance roundrobin
-    server 326010-web-01 54.157.131.6:80 check
-    server 326010-web-02 18.214.88.110:80 check
+frontend http_front
+        bind *:443 ssl crt /etc/letsencrypt/live/www.sovisha.tech/www.sovisha.tech.pem
+        http-request add-header X-Forwarded-Proto http
+        http-request redirect scheme https if !{ ssl_fc }
+        use_backend http_back
+
+backend http_back
+redirect scheme https if !{ ssl_fc }
+        server 326010-web-01 54.157.131.6:80
+        server 326010-web-02 18.214.88.110:80
